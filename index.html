@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Teaser • Lanjutkan untuk Menonton</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f1a; --card:#101827; --text:#e5e7eb; --muted:#9ca3af; --brand:#22c55e; --brandHover:#16a34a; --line:#1f2937;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:860px;margin:0 auto;padding:20px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden}
+    .header{padding:18px 18px 0}
+    .title{font-size:20px;font-weight:700;line-height:1.2;margin:0 0 10px}
+    .meta{display:flex;gap:14px;color:var(--muted);font-size:13px;align-items:center;margin-bottom:12px}
+    .meta .dot{width:6px;height:6px;border-radius:50%;background:#374151;display:inline-block}
+
+    /* Media area */
+    .media{position:relative;background:#000;aspect-ratio:16/9}
+    .thumb{position:absolute;inset:0;background:#000 center/cover no-repeat;filter:contrast(1.05) saturate(1.02)}
+    .overlay{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55))}
+    .play{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);padding:12px 18px;border-radius:999px;font-weight:600}
+    .play svg{width:22px;height:22px}
+
+    /* CTA strip */
+    .cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;border-top:1px solid var(--line);padding:14px 16px}
+    .count{font-size:14px;color:var(--muted)}
+    .btn{appearance:none;border:none;background:var(--brand);color:#04120a;font-weight:700;padding:12px 18px;border-radius:12px;cursor:pointer;transition:.2s;box-shadow:0 6px 18px rgba(34,197,94,.25)}
+    .btn:hover{background:var(--brandHover)}
+    .btn:active{transform:translateY(1px)}
+    .timer{font-variant-numeric:tabular-nums;font-weight:700}
+
+    /* Ad placeholders */
+    .adbar{display:grid;place-items:center;border:1px dashed #334155;border-radius:12px;margin:16px 0;padding:10px;color:#94a3b8;font-size:12px}
+
+    /* Footer */
+    .foot{color:#94a3b8;font-size:12px;text-align:center;margin-top:14px}
+
+    @media (max-width:640px){
+      .title{font-size:18px}
+      .btn{width:100%;text-align:center}
+      .cta{gap:10px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ====== Optional top banner area (728x90/320x100) ====== -->
+    <div class="adbar" id="ad-top">
+      <!-- Tempatkan kode banner Adsterra di sini (728x90 untuk desktop, 320x100/50 untuk mobile) -->
+      <span>AREA IKLAN ATAS (paste kode banner Adsterra di sini)</span>
+    </div>
+
+    <div class="card" id="teaser">
+      <div class="header">
+        <h1 class="title">Video ini bikin heboh netizen. Lanjutkan untuk melihat apa yang terjadi di akhir.</h1>
+        <div class="meta">
+          <span>2 menit baca</span><span class="dot"></span>
+          <span><strong id="activeCount">23</strong> orang sedang menonton</span>
+        </div>
+      </div>
+
+      <div class="media" id="media">
+        <div class="thumb" id="thumb"></div>
+        <div class="overlay">
+          <button class="play" id="playBtn" aria-label="Putar teaser">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="white" stroke-opacity=".6" />
+              <path d="M10 8L16 12L10 16V8Z" fill="white"/>
+            </svg>
+            <span>Putar teaser</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="cta">
+        <div class="count">
+          Mengakses video… <span class="timer" id="countdown">—</span>
+        </div>
+        <button class="btn" id="nextBtn">Lanjutkan</button>
+      </div>
+    </div>
+
+    <!-- ====== Optional mid-page banner ====== -->
+    <div class="adbar" id="ad-mid">
+      <!-- Tempatkan kode banner Adsterra di sini (mis. 300x250) -->
+      <span>AREA IKLAN TENGAH (paste kode banner Adsterra di sini)</span>
+    </div>
+
+    <div class="foot">
+      Dengan melanjutkan, Anda setuju membuka halaman berikut yang mungkin memuat iklan. Harap tidak menyertakan konten eksplisit.
+    </div>
+  </div>
+
+  <script>
+    // ============ KONFIGURASI CEPAT ============
+    const NEXT_URL   = 'https://nuaink-kabeh.github.io/video-pagea/'; // TODO: ganti ke URL tujuanmu (offer/halaman berikut)
+    const THUMB_URL  = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSLh05sXthrkaFLKWUns1AbYo6uzgGU42dWS8cTccsz0DIrkDsVqjn38F_omCgnU_ba_5Le8wW5Qf3__L7trjW9WLLY4p3Q2fhBRpFmGhuhSIl-arlVbNbti9eVelrs3U28Lgd8SnFnrVhEQFhh5X0KffghobZ-TUMpFWIjateQH8ARPv5OuVGDhF4oml2/w228-h400/Screenshot_71.png'; // TODO: ganti thumbnail
+    const AUTO_DELAY = 8;  // detik sampai auto-lanjut (ubah sesuai kebutuhan)
+    const OPEN_IN_NEW_TAB = false; // true = buka tab baru, false = halaman yang sama
+
+    // ============ INISIALISASI UI ============
+    const thumbEl = document.getElementById('thumb');
+    const countdownEl = document.getElementById('countdown');
+    const nextBtn = document.getElementById('nextBtn');
+    const playBtn = document.getElementById('playBtn');
+
+    thumbEl.style.backgroundImage = `url('${THUMB_URL}')`;
+
+    // Angka aktif (simulasi kecil untuk social proof)
+    const activeCountEl = document.getElementById('activeCount');
+    let base = 18 + Math.floor(Math.random()*12); // 18–29
+    activeCountEl.textContent = base.toString();
+    setInterval(()=>{
+      const jitter = Math.random() < .5 ? -1 : 1;
+      base = Math.max(7, base + jitter);
+      activeCountEl.textContent = base.toString();
+    }, 3000);
+
+    // ============ COUNTDOWN & AUTO-GO ============
+    let left = AUTO_DELAY;
+    function paintCountdown(){ countdownEl.textContent = left > 0 ? `${left}s` : 'Siap!'; }
+    paintCountdown();
+    const t = setInterval(()=>{ left--; paintCountdown(); if(left<=0){ clearInterval(t); proceed('auto'); } }, 1000);
+
+    // ============ INTERAKSI PENGGUNA ============
+    playBtn.addEventListener('click', ()=>{
+      // Di sini bisa diganti menjadi video preview ringan jika diinginkan.
+      // Untuk menjaga kecepatan, kita hanya flip teks & percepat countdown.
+      playBtn.disabled = true;
+      left = Math.min(left, 3); // percepat auto-lanjut setelah user klik
+      paintCountdown();
+    });
+
+    nextBtn.addEventListener('click', ()=> proceed('button'));
+
+    // Trigger ringan saat user scroll pertama kali (opsional untuk kualitas trafik)
+    let scrolled = false;
+    window.addEventListener('scroll', () => {
+      if(!scrolled){ scrolled = true; /* tempat bagus untuk menunda load iklan */ }
+    }, { passive:true });
+
+    // ============ POPUNDER TTL (opsional, hormati kebijakan jaringan iklan) ============
+    const POP_TTL_MINUTES = 60; // 1 kali per 60 menit
+    function shouldFirePopunder(){
+      try{
+        const k = 'popunder_last';
+        const last = +localStorage.getItem(k) || 0;
+        const now = Date.now();
+        if(now - last > POP_TTL_MINUTES*60*1000){ localStorage.setItem(k, String(now)); return true; }
+      }catch(e){ /* storage mungkin diblokir */ }
+      return false;
+    }
+
+    // ============ LANJUTKAN ============
+    function proceed(trigger){
+      // Jalankan popunder hanya bila disarankan & sesuai kebijakan jaringan iklan
+      try{
+        if(shouldFirePopunder()){
+          // Jika Adsterra memberi fungsi/popunder handler, panggil di sini.
+          // Contoh placeholder (GANTI sesuai dokumentasi resmi Adsterra Anda):
+          // if(window._pop){ window._pop(); }
+        }
+      }catch(e){ /* diam */ }
+
+      if(OPEN_IN_NEW_TAB){ window.open(NEXT_URL, '_blank', 'noopener'); }
+      else{ window.location.href = NEXT_URL; }
+    }
+  </script>
+</body>
+</html>
